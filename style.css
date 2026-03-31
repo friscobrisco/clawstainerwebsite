@@ -501,6 +501,12 @@ body {
   grid-template-columns: 1fr;
   gap: var(--space-8);
   align-items: start;
+  min-width: 0;
+}
+
+.use-case-text,
+.use-case-terminal {
+  min-width: 0;
 }
 
 @media (min-width: 768px) {
@@ -544,6 +550,7 @@ body {
   color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: var(--space-3);
+  overflow-wrap: break-word;
 }
 
 .use-case-detail {
