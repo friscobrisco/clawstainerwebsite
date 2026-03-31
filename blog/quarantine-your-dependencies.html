@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quarantine Your Dependencies: Sandbox Updates Before They Reach Your Users — Clawstainer</title>
+  <meta name="description" content="The axios supply chain attack proved that npm install can be a weapon. Use Clawstainer to quarantine dependency updates in disposable sandboxes before they touch production.">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../base.css">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo-group" aria-label="Clawstainer home">
+        <svg width="180" height="40" viewBox="0 0 360 80" aria-hidden="true">
+          <g class="logo-dots">
+            <rect x="56.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(22.0 60.00 40.00)"/>
+            <rect x="50.14" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(67.0 54.14 54.14)"/>
+            <rect x="36.00" y="56.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.95" transform="rotate(112.0 40.00 60.00)"/>
+            <rect x="21.86" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(157.0 25.86 54.14)"/>
+            <rect x="16.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(202.0 20.00 40.00)"/>
+            <rect x="21.86" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(247.0 25.86 25.86)"/>
+            <rect x="36.00" y="16.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(292.0 40.00 20.00)"/>
+            <rect x="50.14" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(337.0 54.14 25.86)"/>
+          </g>
+          <text x="76" y="47" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="600" fill="currentColor" letter-spacing="-0.02em">clawstainer</text>
+        </svg>
+      </a>
+      <nav>
+        <ul class="nav-links" role="list">
+          <li><a href="../index.html#how">How It Works</a></li>
+          <li><a href="../index.html#use-cases">Use Cases</a></li>
+          <li><a href="../index.html#fleet">Fleet</a></li>
+          <li><a href="./index.html">Blog</a></li>
+          <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer" class="btn-ghost">GitHub</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="post-header">
+      <a href="./index.html" class="post-back">&larr; Back to blog</a>
+      <div class="post-meta">
+        <span class="blog-entry-date">2026-03-31</span>
+        <span class="blog-entry-tag">security</span>
+      </div>
+      <h1>Quarantine Your Dependencies: Sandbox Updates Before They Reach Your Users</h1>
+    </div>
+
+    <article class="post-body">
+      <p>Today, <a href="https://x.com/feross">Feross Aboukhadijeh</a> (founder of <a href="https://socket.dev">Socket</a>) flagged an active supply chain attack on <strong>axios</strong> — one of npm's most depended-on packages with 100M+ weekly downloads. The latest <code>axios@1.14.1</code> pulled in <code>plain-crypto-js@4.2.1</code>, a package that didn't exist before that day. It was textbook supply chain malware: an obfuscated dropper that deobfuscates payloads at runtime, dynamically loads <code>fs</code>, <code>os</code>, and <code>execSync</code> to evade static analysis, executes shell commands, stages payloads in temp directories, and deletes artifacts post-execution to destroy forensic evidence.</p>
+
+      <p>Every <code>npm install</code> pulling the latest version was potentially compromised. The advisory was simple: pin your version immediately, audit your lockfiles, do not upgrade.</p>
+
+      <p>But "do not upgrade" is not a long-term strategy. Dependencies need updates — security patches, bug fixes, new features. The question isn't whether to update, it's how to update safely. The answer is quarantine: run every dependency update in an isolated sandbox, observe its behavior, validate it passes your tests, and only then promote it to your real environment.</p>
+
+      <p>This post walks through how to build that quarantine workflow with Clawstainer.</p>
+
+      <h2>The Problem: npm install Is a Trust Exercise</h2>
+
+      <p>When you run <code>npm install</code> (or <code>pip install</code>, or <code>cargo update</code>), you're executing arbitrary code from the internet on your machine. Install scripts run with your user's permissions. They can read your filesystem, your environment variables, your SSH keys, your AWS credentials. They can phone home. They can install backdoors.</p>
+
+      <p>The axios attack is not an anomaly. Supply chain attacks have hit:</p>
+
+      <ul>
+        <li><strong>event-stream</strong> (2018) — compromised maintainer, stole cryptocurrency</li>
+        <li><strong>ua-parser-js</strong> (2021) — hijacked npm account, installed crypto miners</li>
+        <li><strong>colors / faker</strong> (2022) — maintainer protest, broke thousands of apps</li>
+        <li><strong>xz utils</strong> (2024) — multi-year social engineering attack on a Linux compression library</li>
+        <li><strong>axios</strong> (2026) — obfuscated dropper, 100M+ weekly downloads exposed</li>
+      </ul>
+
+      <p>The pattern is always the same: a trusted package gets compromised, and because everyone auto-upgrades, the blast radius is enormous. Lockfiles help — they pin exact versions — but the moment you update that lockfile, you're trusting again.</p>
+
+      <h2>The Quarantine Pattern</h2>
+
+      <p>The idea is straightforward. Never run <code>npm install</code> with new dependency versions on a machine you care about. Instead:</p>
+
+      <ol>
+        <li>Snapshot your current known-good environment</li>
+        <li>Spin up a disposable sandbox from that snapshot</li>
+        <li>Run the update inside the sandbox</li>
+        <li>Observe, test, and audit</li>
+        <li>If clean, promote the update. If not, destroy the sandbox and nothing was harmed.</li>
+      </ol>
+
+<div class="diagram">┌──────────────────────────────────────────────────────────┐
+│                   Your Infrastructure                     │
+│                                                          │
+│  ┌──────────────┐                                        │
+│  │ Production   │  Known-good, pinned, tested            │
+│  │ (snapshot)   │──────────────────────┐                 │
+│  └──────────────┘                      │                 │
+│                                        ▾                 │
+│                              ┌──────────────────┐        │
+│                              │  Quarantine Box   │        │
+│                              │  (disposable)     │        │
+│                              │                   │        │
+│                              │  npm update       │        │
+│                              │  run tests        │        │
+│                              │  audit deps       │        │
+│                              │  check network    │        │
+│                              └────────┬─────────┘        │
+│                                       │                  │
+│                              ┌────────▾─────────┐        │
+│                              │    Pass?          │        │
+│                              │  Yes ──▸ Promote  │        │
+│                              │  No  ──▸ Destroy  │        │
+│                              └──────────────────┘        │
+└──────────────────────────────────────────────────────────┘</div>
+
+      <p>The sandbox is isolated. It has its own filesystem, its own PID namespace, its own network namespace. If a malicious install script tries to read your SSH keys, stage payloads in temp directories, or phone home to a C2 server — it does all of that inside a container that you're about to destroy. Your actual machine is untouched.</p>
+
+      <h2>Step 1: Snapshot Your Known-Good State</h2>
+
+      <p>Start by creating a sandbox that mirrors your project's environment. Install your language runtime, your tools, clone your repo, install your current pinned dependencies:</p>
+
+<pre><code># Create a sandbox with your project's requirements
+clawstainer create --name project-base --memory 2048 --cpus 2
+
+# Provision with the tools you need
+clawstainer provision &lt;id&gt; --components nodejs,git,ripgrep
+
+# Copy your project into the sandbox
+clawstainer cp ./my-project &lt;id&gt;:/root/my-project
+
+# Install current pinned dependencies (the ones you trust)
+clawstainer exec &lt;id&gt; "cd /root/my-project && npm ci"</code></pre>
+
+      <p>Verify everything works:</p>
+
+<pre><code># Run your test suite
+clawstainer exec &lt;id&gt; "cd /root/my-project && npm test"</code></pre>
+
+      <p>If tests pass, snapshot this state. This is your known-good baseline:</p>
+
+<pre><code>clawstainer snapshot create &lt;id&gt; --name project-clean</code></pre>
+
+      <h2>Step 2: Quarantine the Update</h2>
+
+      <p>Now when you want to update dependencies, never do it on your host machine. Spin up a disposable sandbox from the snapshot:</p>
+
+<pre><code># Disposable quarantine box — boots in 2-3 seconds with everything already installed
+clawstainer create --name quarantine --from project-clean --memory 2048 --cpus 2</code></pre>
+
+      <p>Run the update inside the quarantine:</p>
+
+<pre><code># Update a specific package
+clawstainer exec &lt;id&gt; "cd /root/my-project && npm install axios@latest"
+
+# Or update everything
+clawstainer exec &lt;id&gt; "cd /root/my-project && npm update"</code></pre>
+
+      <p>If <code>axios@1.14.1</code> had been the latest version, the malicious <code>plain-crypto-js</code> dropper would have executed its install script <em>inside the sandbox</em>. It would have tried to stage payloads in <code>/tmp</code> and <code>ProgramData</code> — inside the sandbox. It would have executed shell commands — inside the sandbox. It would have tried to phone home — through the sandbox's network, which you can monitor or cut entirely.</p>
+
+      <p>Your host machine? Untouched.</p>
+
+      <h2>Step 3: Audit and Observe</h2>
+
+      <p>With the update installed in quarantine, now you investigate.</p>
+
+      <h3>Run your test suite</h3>
+
+<pre><code>clawstainer exec &lt;id&gt; "cd /root/my-project && npm test"</code></pre>
+
+      <p>If tests fail, something changed. Investigate or destroy.</p>
+
+      <h3>Audit what changed in the dependency tree</h3>
+
+<pre><code># What new packages appeared?
+clawstainer exec &lt;id&gt; "cd /root/my-project && npm ls --all 2&gt;&amp;1 | head -50"
+
+# Diff the lockfile against the known-good version
+clawstainer exec &lt;id&gt; "cd /root/my-project && diff package-lock.json.bak package-lock.json"</code></pre>
+
+      <p>In the axios attack, this is where you'd see <code>plain-crypto-js@4.2.1</code> appear in the tree — a package that didn't exist yesterday, pulled in by a package that never needed a crypto dependency before. That alone is a red flag.</p>
+
+      <h3>Check for suspicious filesystem activity</h3>
+
+<pre><code># What files were created or modified outside node_modules?
+clawstainer exec &lt;id&gt; "find /tmp -type f -newer /root/my-project/package.json 2>/dev/null"
+clawstainer exec &lt;id&gt; "find /root -name '*.sh' -newer /root/my-project/package.json 2>/dev/null"
+
+# Any new binaries or scripts in unexpected places?
+clawstainer exec &lt;id&gt; "find /usr/local/bin -newer /root/my-project/package.json 2>/dev/null"</code></pre>
+
+      <p>The axios dropper staged files in temp directories and deleted them post-execution. In a sandbox, you can snapshot <em>before</em> and <em>after</em> the install and diff the entire filesystem if you want to.</p>
+
+      <h3>Check for network activity</h3>
+
+<pre><code># Install network monitoring tools
+clawstainer exec &lt;id&gt; "apt-get install -y net-tools lsof"
+
+# What's listening?
+clawstainer exec &lt;id&gt; "lsof -i -P -n 2>/dev/null | grep ESTABLISHED"
+
+# DNS lookups that happened during install (if you have logging)
+clawstainer exec &lt;id&gt; "cat /var/log/syslog 2>/dev/null | grep -i dns | tail -20"</code></pre>
+
+      <h3>Or go nuclear: isolated network</h3>
+
+      <p>For maximum paranoia, create the quarantine sandbox with no network access at all. Copy the update tarball in manually:</p>
+
+<pre><code># Create an isolated sandbox (no NAT, no internet)
+clawstainer create --name quarantine-strict --from project-clean --memory 2048 --cpus 2 --net isolated
+
+# Download the package on your host first
+npm pack axios@1.14.1
+
+# Copy it into the sandbox
+clawstainer cp axios-1.14.1.tgz &lt;id&gt;:/root/my-project/
+
+# Install from the local tarball
+clawstainer exec &lt;id&gt; "cd /root/my-project && npm install ./axios-1.14.1.tgz"</code></pre>
+
+      <p>Now the install script can't phone home at all. If it tries to <code>execSync('curl ...')</code>, it fails. If it tries to exfiltrate data, it has nowhere to send it. You can inspect the installed files at your leisure.</p>
+
+      <h2>Step 4: Promote or Destroy</h2>
+
+      <p>If the update looks clean — tests pass, no suspicious files, no unexpected dependencies, no network anomalies — promote it:</p>
+
+<pre><code># Copy the updated lockfile back to your host
+clawstainer cp &lt;id&gt;:/root/my-project/package-lock.json ./my-project/package-lock.json
+
+# Destroy the quarantine box
+clawstainer destroy &lt;id&gt;</code></pre>
+
+      <p>If anything looks wrong, destroy the sandbox and report the issue:</p>
+
+<pre><code># Nuke it
+clawstainer destroy &lt;id&gt;
+
+# Your host is clean. Your production is clean. Nothing escaped.</code></pre>
+
+      <p>The snapshot is still there. You can spin up another quarantine box in seconds to investigate further, try a different version, or test a patch.</p>
+
+      <h2>Automating the Quarantine</h2>
+
+      <p>For teams that update dependencies regularly, this can be scripted. Here's the basic flow:</p>
+
+<pre><code>#!/bin/bash
+# quarantine-update.sh — test dependency updates in a sandbox
+
+SNAPSHOT="project-clean"
+QUARANTINE_ID=$(clawstainer create --name quarantine-$(date +%s) \
+  --from $SNAPSHOT --memory 2048 --cpus 2 --format json | jq -r '.id')
+
+echo "Quarantine sandbox: $QUARANTINE_ID"
+
+# Run the update
+clawstainer exec $QUARANTINE_ID "cd /root/my-project && npm update"
+
+# Run tests
+TEST_RESULT=$(clawstainer exec $QUARANTINE_ID "cd /root/my-project && npm test" 2>&1)
+TEST_EXIT=$?
+
+if [ $TEST_EXIT -eq 0 ]; then
+  echo "Tests passed. Auditing..."
+
+  # Check for new unexpected dependencies
+  NEW_DEPS=$(clawstainer exec $QUARANTINE_ID \
+    "cd /root/my-project && npm ls --json 2>/dev/null" | \
+    jq '[.. | .dependencies? // empty | keys[]] | unique | length')
+
+  echo "Total dependencies: $NEW_DEPS"
+
+  # Check for suspicious temp files
+  SUSPICIOUS=$(clawstainer exec $QUARANTINE_ID \
+    "find /tmp -type f 2>/dev/null | wc -l")
+
+  echo "Files in /tmp: $SUSPICIOUS"
+
+  # Copy updated lockfile if everything looks clean
+  echo "Review complete. Promoting lockfile."
+  clawstainer cp $QUARANTINE_ID:/root/my-project/package-lock.json \
+    ./my-project/package-lock.json
+else
+  echo "Tests FAILED. Update rejected."
+  echo "$TEST_RESULT"
+fi
+
+# Always destroy the quarantine box
+clawstainer destroy $QUARANTINE_ID
+echo "Quarantine destroyed."</code></pre>
+
+      <p>Run this in CI, in a cron job, or manually whenever Dependabot opens a PR. The quarantine box lives for minutes at most. Your host never runs untrusted code.</p>
+
+      <h2>Why Not Just Use Docker?</h2>
+
+      <p>You could. But Clawstainer sandboxes are lighter than Docker containers for this use case:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Clawstainer</th>
+              <th>Docker</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Boot from snapshot</td>
+              <td>2-3 seconds</td>
+              <td>Varies (layer cache dependent)</td>
+            </tr>
+            <tr>
+              <td>Snapshot workflow</td>
+              <td>Built-in (<code>snapshot create/list/delete</code>)</td>
+              <td><code>docker commit</code> + manual tagging</td>
+            </tr>
+            <tr>
+              <td>File copy in/out</td>
+              <td><code>clawstainer cp</code></td>
+              <td><code>docker cp</code></td>
+            </tr>
+            <tr>
+              <td>Exec into running sandbox</td>
+              <td><code>clawstainer exec</code></td>
+              <td><code>docker exec</code></td>
+            </tr>
+            <tr>
+              <td>Network isolation</td>
+              <td><code>--net isolated</code></td>
+              <td><code>--network none</code></td>
+            </tr>
+            <tr>
+              <td>No daemon required</td>
+              <td>Yes (systemd-nspawn)</td>
+              <td>No (dockerd must be running)</td>
+            </tr>
+            <tr>
+              <td>Resource stats</td>
+              <td><code>clawstainer stats</code></td>
+              <td><code>docker stats</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The real advantage is the snapshot workflow. You snapshot your known-good state once, and every quarantine box boots from that snapshot with your entire project, all dependencies, and all tools already in place. No Dockerfile to maintain, no layer caching surprises, no rebuilds.</p>
+
+      <h2>Beyond npm: Python, Rust, Go</h2>
+
+      <p>This pattern isn't npm-specific. Any package manager that runs arbitrary code during install is a vector:</p>
+
+<pre><code># Python — pip install runs setup.py, which can execute anything
+clawstainer exec &lt;id&gt; "cd /root/my-project && pip install -r requirements-new.txt"
+
+# Rust — build.rs scripts run at compile time
+clawstainer exec &lt;id&gt; "cd /root/my-project && cargo update && cargo build"
+
+# Go — no install scripts, but you still want to test before promoting
+clawstainer exec &lt;id&gt; "cd /root/my-project && go get -u ./... && go test ./..."</code></pre>
+
+      <p>The quarantine pattern is the same for all of them: snapshot the clean state, update in isolation, test, audit, promote or destroy.</p>
+
+      <h2>What This Doesn't Solve</h2>
+
+      <p>Quarantining catches runtime behavior — malicious install scripts, suspicious file creation, unexpected network activity. It doesn't catch everything:</p>
+
+      <ul>
+        <li><strong>Dormant payloads</strong> — malware that waits days or weeks before activating won't trigger during a short quarantine window</li>
+        <li><strong>Logic bugs</strong> — a backdoor that only fires on specific input won't show up in a test suite unless you test that input</li>
+        <li><strong>Subtle data exfiltration</strong> — if the malware phones home through DNS or encodes data in HTTP headers to legitimate-looking domains, basic network monitoring might miss it</li>
+      </ul>
+
+      <p>Quarantine is one layer of defense. Pair it with lockfile auditing, tools like <a href="https://socket.dev">Socket</a> for static analysis of packages, and monitored staging environments for time-delayed threats.</p>
+
+      <h2>The Takeaway</h2>
+
+      <p>The axios attack is a reminder that <code>npm install</code> is not safe by default. Neither is <code>pip install</code>. Neither is any command that downloads and executes code from a public registry. The packages you depend on can be compromised at any time, by anyone who gains access to a maintainer account or slips a PR past review.</p>
+
+      <p>You can't stop supply chain attacks from happening. But you can stop them from reaching your machine. Snapshot your known-good state. Run every update in a quarantine sandbox. Test it, audit it, and only then let it through. If it's dirty, destroy the sandbox and walk away clean.</p>
+
+      <p>The cost is a few extra minutes per update cycle. The alternative is explaining to your users why their data was exfiltrated because you ran <code>npm update</code> on a Tuesday.</p>
+
+      <div class="post-footer-links">
+        <a href="https://github.com/friscobrisco/clawstainer">Clawstainer on GitHub</a> &middot; <a href="https://socket.dev">Socket (supply chain security)</a> &middot; <a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md">Docs</a>
+      </div>
+    </article>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <span class="footer-text">&copy; 2026 Clawstainer. All rights reserved.</span>
+      <ul class="footer-links" role="list">
+        <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md" target="_blank" rel="noopener noreferrer">Docs</a></li>
+      </ul>
+    </div>
+  </footer>
+
+<script>
+  function toggleTheme() {
+    var root = document.documentElement;
+    var current = root.getAttribute('data-theme');
+    var next;
+    if (current === 'light') next = 'dark';
+    else if (current === 'dark') next = 'light';
+    else next = window.matchMedia('(prefers-color-scheme: light)').matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+  </script>
+</body>
+</html>

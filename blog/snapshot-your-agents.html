@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snapshot Your Agents: Configure Once, Deploy Instantly — Clawstainer</title>
+  <meta name="description" content="Set up your agent environment once, snapshot it, and launch future sandboxes with everything already in place. No re-provisioning, no waiting.">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../base.css">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo-group" aria-label="Clawstainer home">
+        <svg width="180" height="40" viewBox="0 0 360 80" aria-hidden="true">
+          <g class="logo-dots">
+            <rect x="56.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(22.0 60.00 40.00)"/>
+            <rect x="50.14" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(67.0 54.14 54.14)"/>
+            <rect x="36.00" y="56.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.95" transform="rotate(112.0 40.00 60.00)"/>
+            <rect x="21.86" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(157.0 25.86 54.14)"/>
+            <rect x="16.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(202.0 20.00 40.00)"/>
+            <rect x="21.86" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(247.0 25.86 25.86)"/>
+            <rect x="36.00" y="16.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(292.0 40.00 20.00)"/>
+            <rect x="50.14" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(337.0 54.14 25.86)"/>
+          </g>
+          <text x="76" y="47" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="600" fill="currentColor" letter-spacing="-0.02em">clawstainer</text>
+        </svg>
+      </a>
+      <nav>
+        <ul class="nav-links" role="list">
+          <li><a href="../index.html#how">How It Works</a></li>
+          <li><a href="../index.html#use-cases">Use Cases</a></li>
+          <li><a href="../index.html#fleet">Fleet</a></li>
+          <li><a href="./index.html">Blog</a></li>
+          <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer" class="btn-ghost">GitHub</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="post-header">
+      <a href="./index.html" class="post-back">&larr; Back to blog</a>
+      <div class="post-meta">
+        <span class="blog-entry-date">2026-03-31</span>
+        <span class="blog-entry-tag">workflow</span>
+      </div>
+      <h1>Snapshot Your Agents: Configure Once, Deploy Instantly</h1>
+    </div>
+
+    <article class="post-body">
+      <p>Provisioning an AI agent sandbox takes time. You install system packages, pull the agent runtime, configure dependencies, set up services. For something like <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>, that's Python, Node, UV, a git clone, a virtual environment, and a full <code>pip install</code> of heavy ML dependencies. It works, but it takes minutes — and doing it again for every new sandbox is wasteful.</p>
+
+      <p>Clawstainer's snapshot feature solves this. Set up your environment once, save the configured state as a snapshot, and launch future sandboxes from that snapshot with everything already in place. No re-provisioning, no re-downloading, no waiting for <code>apt-get</code>. Boot to a fully configured agent in 2-3 seconds.</p>
+
+      <p>This post walks through the full workflow — both hands-on CLI commands and the automated agent provisioning path.</p>
+
+      <h2>How Snapshots Work Under the Hood</h2>
+
+      <p>Clawstainer uses OverlayFS to layer sandbox filesystems. When you create a sandbox, it gets a read-only base image (Ubuntu 24.04) and a writable upper layer where all your changes land — installed packages, config files, scripts, everything.</p>
+
+      <p>When you snapshot a sandbox, Clawstainer tars that upper layer into a compressed archive. When you create a new sandbox from that snapshot, it inserts the snapshot as a middle layer between the base image and a fresh writable layer:</p>
+
+<div class="diagram">┌─────────────────────────────────────────────┐
+│  New Writable Layer (empty, yours to modify) │  &larr; top
+├─────────────────────────────────────────────┤
+│  Snapshot Layer (read-only)                  │  &larr; your provisioned state
+├─────────────────────────────────────────────┤
+│  Base Image (read-only, shared)              │  &larr; Ubuntu 24.04
+└─────────────────────────────────────────────┘</div>
+
+      <p>Each new sandbox gets its own writable layer on top. Changes in one sandbox never affect the snapshot or any other sandbox. The snapshot itself is only extracted once and cached — spin up ten sandboxes from the same snapshot and they all share the same read-only middle layer.</p>
+
+      <h2>The CLI Workflow: Hands-On</h2>
+
+      <p>Here's the direct approach. You create a sandbox, configure it however you want, snapshot it, and stamp out clones.</p>
+
+      <h3>1. Create and provision a base sandbox</h3>
+
+<pre><code># Create a sandbox — use 4GB for Hermes (heavy Python deps), 2GB for OpenClaw
+clawstainer create --name hermes-base --memory 4096 --cpus 2 --linger
+
+# Provision with the built-in Hermes template
+clawstainer provision &lt;id&gt; --components hermes-agent</code></pre>
+
+      <p>The <code>hermes-agent</code> component handles everything: installs curl, git, xz-utils, runs the upstream install script (which pulls Python 3.11 via UV, clones the repo, creates a venv, installs all dependencies), and creates a wrapper script at <code>/usr/local/bin/hermes-agent</code>.</p>
+
+      <p>For OpenClaw, same idea but lighter:</p>
+
+<pre><code>clawstainer create --name openclaw-base --memory 2048 --cpus 2 --linger
+clawstainer provision &lt;id&gt; --components openclaw</code></pre>
+
+      <h3>2. Verify it works</h3>
+
+      <p>Before snapshotting, make sure the agent actually runs:</p>
+
+<pre><code># Hermes
+clawstainer exec &lt;id&gt; "hermes-agent --help"
+
+# OpenClaw
+clawstainer exec &lt;id&gt; "openclaw --version"</code></pre>
+
+      <p>You can also shell in and do additional configuration — install extra tools, drop config files, set environment variables. The snapshot captures <em>everything</em> in the writable layer, not just installed packages.</p>
+
+<pre><code># Shell in for manual tweaks
+clawstainer shell &lt;id&gt;
+
+# Install extra tools
+apt-get install -y jq ripgrep htop
+
+# Drop a config file
+cat &gt; /root/.config/hermes/settings.json &lt;&lt; 'EOF'
+{
+  "model": "claude-sonnet-4-20250514",
+  "temperature": 0.7
+}
+EOF
+
+# Exit the shell
+exit</code></pre>
+
+      <p>All of that — the packages, the config file, the directory structure — gets captured in the snapshot.</p>
+
+      <h3>3. Snapshot the configured state</h3>
+
+<pre><code># Snapshot with a descriptive name
+clawstainer snapshot create &lt;id&gt; --name hermes-ready
+
+# Check it
+clawstainer snapshot list</code></pre>
+
+      <p>Snapshots are stored as compressed tarballs at <code>/var/lib/clawstainer/snapshots/</code> inside the host (or Lima VM on macOS). A fully provisioned Hermes snapshot is around 1GB; OpenClaw is around 700MB.</p>
+
+      <h3>4. Launch new sandboxes from the snapshot</h3>
+
+<pre><code># Instant — no re-provisioning
+clawstainer create --name worker-1 --from hermes-ready --memory 4096 --cpus 2 --linger
+clawstainer create --name worker-2 --from hermes-ready --memory 4096 --cpus 2 --linger
+clawstainer create --name worker-3 --from hermes-ready --memory 4096 --cpus 2 --linger</code></pre>
+
+      <p>Each of those boots in 2-3 seconds with Hermes already installed, the venv populated, and the wrapper script in place. No waiting for pip, no re-cloning repos. The snapshot layer is read-only and shared; each sandbox gets its own writable layer for any future changes.</p>
+
+      <p>Verify they all work:</p>
+
+<pre><code>clawstainer exec worker-1 "hermes-agent --help"
+clawstainer exec worker-2 "hermes-agent --help"
+clawstainer exec worker-3 "hermes-agent --help"</code></pre>
+
+      <h3>5. Manage your snapshots</h3>
+
+<pre><code># List all snapshots with sizes and dates
+clawstainer snapshot list
+
+# Delete a snapshot you no longer need
+clawstainer snapshot delete hermes-ready</code></pre>
+
+      <h2>The Agent Provisioning Workflow</h2>
+
+      <p>If you're building agent infrastructure — deploying multiple agents for a team, a family, or a fleet of workers — the snapshot workflow becomes the foundation of your deployment pipeline.</p>
+
+      <h3>Golden image pattern</h3>
+
+      <p>Create one "golden" sandbox per agent type, provision it, validate it, snapshot it. Then deploy all future agents from that snapshot. Update the golden image when you need to upgrade the agent version or change the base configuration.</p>
+
+<div class="diagram">┌─────────────┐     ┌──────────────┐     ┌──────────────────┐
+│  Create     │ ──▸ │  Provision   │ ──▸ │  Validate        │
+│  base box   │     │  + configure │     │  (exec, shell)   │
+└─────────────┘     └──────────────┘     └────────┬─────────┘
+                                                   │
+                                          ┌────────▾─────────┐
+                                          │  Snapshot         │
+                                          │  "agent-ready"   │
+                                          └────────┬─────────┘
+                                                   │
+                    ┌──────────────────────────────┼──────────────────────────────┐
+                    │                              │                              │
+           ┌───────▾────────┐             ┌───────▾────────┐             ┌───────▾────────┐
+           │  --from         │             │  --from         │             │  --from         │
+           │  agent-ready   │             │  agent-ready   │             │  agent-ready   │
+           │  (2-3 seconds) │             │  (2-3 seconds) │             │  (2-3 seconds) │
+           └────────────────┘             └────────────────┘             └────────────────┘</div>
+
+      <h3>Deploying a team or family from snapshots</h3>
+
+      <p>Say you've built two golden images — <code>hermes-ready</code> for power users and <code>openclaw-ready</code> for everyone else. Now deployment is just a list of <code>create --from</code> commands:</p>
+
+<pre><code># Power users get Hermes
+clawstainer create --name dev-1 --from hermes-ready --memory 4096 --cpus 2 --linger
+clawstainer create --name dev-2 --from hermes-ready --memory 4096 --cpus 2 --linger
+
+# Everyone else gets OpenClaw
+clawstainer create --name support-1 --from openclaw-ready --memory 2048 --cpus 2 --linger
+clawstainer create --name support-2 --from openclaw-ready --memory 2048 --cpus 2 --linger
+clawstainer create --name support-3 --from openclaw-ready --memory 2048 --cpus 2 --linger</code></pre>
+
+      <p>Five agents, two types, all up in under 15 seconds total. Each one isolated, each one independent, each one ready to personalize.</p>
+
+      <h3>Updating a golden image</h3>
+
+      <p>When the upstream agent releases a new version, you don't re-provision every sandbox. You update the golden image and re-snapshot:</p>
+
+<pre><code># Create a fresh base, provision with the latest version
+clawstainer create --name hermes-base-v2 --memory 4096 --cpus 2 --linger
+clawstainer provision &lt;id&gt; --components hermes-agent
+
+# Validate
+clawstainer exec &lt;id&gt; "hermes-agent --help"
+
+# Replace the old snapshot
+clawstainer snapshot delete hermes-ready
+clawstainer snapshot create &lt;id&gt; --name hermes-ready
+
+# New sandboxes now get the updated version
+clawstainer create --name dev-3 --from hermes-ready --memory 4096 --cpus 2 --linger</code></pre>
+
+      <p>Existing sandboxes keep running on the old version. New sandboxes get the update. No downtime, no in-place upgrades that can break things.</p>
+
+      <h2>What Gets Captured</h2>
+
+      <p>A common question: does the snapshot only capture installed packages, or does it capture files too?</p>
+
+      <p>It captures <em>everything</em>. The snapshot is a tar of the OverlayFS upper directory, which contains every filesystem change since the sandbox was created. That means:</p>
+
+      <ul>
+        <li>Installed packages (<code>apt-get install</code>, <code>pip install</code>, <code>npm install</code>)</li>
+        <li>Config files you wrote or modified</li>
+        <li>Scripts and binaries you placed anywhere in the filesystem</li>
+        <li>Systemd services you created and enabled</li>
+        <li>User directories, dotfiles, shell history</li>
+        <li>Cloned repos and their contents</li>
+        <li>Virtual environments with all their site-packages</li>
+      </ul>
+
+      <p>If you changed it, the snapshot has it.</p>
+
+      <h2>Memory Requirements</h2>
+
+      <p>One thing to watch: some agents have heavy dependencies that need significant memory during installation. Hermes Agent in particular pulls in packages like ctranslate2 and other ML libraries that spike memory usage during <code>pip install</code>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Agent</th>
+              <th>Min Memory (provision)</th>
+              <th>Min Memory (runtime)</th>
+              <th>Snapshot Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>OpenClaw</td>
+              <td>2GB</td>
+              <td>1-2GB</td>
+              <td>~700MB</td>
+            </tr>
+            <tr>
+              <td>Hermes Agent</td>
+              <td>4GB</td>
+              <td>2-4GB</td>
+              <td>~1GB</td>
+            </tr>
+            <tr>
+              <td>Claude Code</td>
+              <td>2GB</td>
+              <td>1-2GB</td>
+              <td>~500MB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Hermes will OOM during provisioning if you give it less than 4GB. Once provisioned and snapshotted, you can run the resulting sandboxes with less memory if the workload allows — but give it 4GB during the initial install.</p>
+
+      <h2>Exporting Snapshots</h2>
+
+      <p>Snapshots live inside the host (or Lima VM on macOS) at <code>/var/lib/clawstainer/snapshots/</code>. If you want to back them up, share them with a teammate, or move them to another machine, you can copy them out:</p>
+
+<pre><code># On macOS — copy from the Lima VM to your local filesystem
+limactl copy clawstainer:/var/lib/clawstainer/snapshots/hermes-ready.tar.gz ./
+limactl copy clawstainer:/var/lib/clawstainer/snapshots/openclaw-ready.tar.gz ./
+
+# On Linux — they're just files
+cp /var/lib/clawstainer/snapshots/hermes-ready.tar.gz ./</code></pre>
+
+      <p>To use a snapshot on another machine, copy the tarball into the same path on that host and it'll show up in <code>clawstainer snapshot list</code>.</p>
+
+      <h2>The Takeaway</h2>
+
+      <p>Provisioning an agent sandbox is a one-time cost. The first time you set up Hermes or OpenClaw, you wait for packages to download, dependencies to compile, services to configure. After that, you snapshot it and never wait again.</p>
+
+      <p>The workflow is simple: create, provision, validate, snapshot. From that point on, every new sandbox is a 2-3 second boot from a known-good state. Whether you're deploying agents for a team of five or a fleet of fifty, the provisioning time is the same — near zero.</p>
+
+      <p>Configure once. Snapshot. Deploy instantly.</p>
+
+      <div class="post-footer-links">
+        <a href="https://github.com/friscobrisco/clawstainer">Clawstainer on GitHub</a> &middot; <a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md">Docs</a>
+      </div>
+    </article>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <span class="footer-text">&copy; 2026 Clawstainer. All rights reserved.</span>
+      <ul class="footer-links" role="list">
+        <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md" target="_blank" rel="noopener noreferrer">Docs</a></li>
+      </ul>
+    </div>
+  </footer>
+
+<script>
+  function toggleTheme() {
+    var root = document.documentElement;
+    var current = root.getAttribute('data-theme');
+    var next;
+    if (current === 'light') next = 'dark';
+    else if (current === 'dark') next = 'light';
+    else next = window.matchMedia('(prefers-color-scheme: light)').matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+  </script>
+</body>
+</html>
