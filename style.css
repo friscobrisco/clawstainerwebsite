@@ -385,6 +385,11 @@ body {
 .how-terminal-wrap {
   position: sticky;
   top: calc(60px + var(--space-6));
+  min-width: 0;
+}
+
+.how-steps {
+  min-width: 0;
 }
 
 /* Animated terminal lines */
@@ -580,10 +585,15 @@ body {
   }
 }
 
+.fleet-text {
+  min-width: 0;
+}
+
 .fleet-terminals {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 /* ============================================================
@@ -1329,6 +1339,12 @@ body {
     padding: var(--space-3) var(--space-2);
   }
 
+  /* Logo: scale down on narrow screens */
+  .logo-group svg {
+    max-width: 140px;
+    height: auto;
+  }
+
   .hero h1 {
     font-size: var(--text-xl);
   }
@@ -1342,17 +1358,27 @@ body {
     align-items: flex-start;
   }
 
+  /* Install command: prevent overflow */
   .install-cmd {
     font-size: var(--text-sm);
     word-break: break-all;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .how-step {
     padding: var(--space-3) var(--space-4);
   }
 
+  /* Disable sticky terminal on mobile — single-column layout doesn't need it */
+  .how-terminal-wrap {
+    position: static;
+  }
+
   .terminal {
     font-size: var(--text-xs);
+    max-width: 100%;
   }
 
   .terminal-body {
@@ -1416,5 +1442,57 @@ body {
   .cta-actions {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+/* Extra-small screens */
+@media (max-width: 374px) {
+  .container {
+    padding-inline: var(--space-4);
+  }
+
+  .logo-group svg {
+    max-width: 120px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.5rem);
+  }
+
+  .hero-kicker {
+    font-size: var(--text-sm);
+  }
+
+  .install-cmd {
+    font-size: var(--text-xs);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    font-size: var(--text-xs);
+    padding: var(--space-2) var(--space-4);
+    width: 100%;
+    justify-content: center;
+  }
+
+  .uc-header {
+    gap: var(--space-2);
+  }
+
+  .uc-number {
+    font-size: var(--text-lg);
+  }
+
+  .use-case-text h3 {
+    font-size: var(--text-base);
+  }
+
+  .post-body {
+    padding-inline: var(--space-4);
+  }
+
+  .post-header {
+    padding-inline: var(--space-4);
   }
 }
