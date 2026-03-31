@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills Reference — Clawstainer</title>
+  <meta name="description" content="Machine-readable AI agent skills reference for Clawstainer CLI. All commands, flags, return formats, and workflow patterns.">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="./base.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="./index.html" class="logo-group" aria-label="Clawstainer home">
+        <svg width="180" height="40" viewBox="0 0 360 80" aria-hidden="true">
+          <g class="logo-dots">
+            <rect x="56.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(22.0 60.00 40.00)"/>
+            <rect x="50.14" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(67.0 54.14 54.14)"/>
+            <rect x="36.00" y="56.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.95" transform="rotate(112.0 40.00 60.00)"/>
+            <rect x="21.86" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(157.0 25.86 54.14)"/>
+            <rect x="16.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(202.0 20.00 40.00)"/>
+            <rect x="21.86" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(247.0 25.86 25.86)"/>
+            <rect x="36.00" y="16.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(292.0 40.00 20.00)"/>
+            <rect x="50.14" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(337.0 54.14 25.86)"/>
+          </g>
+          <text x="76" y="47" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="600" fill="currentColor" letter-spacing="-0.02em">clawstainer</text>
+        </svg>
+      </a>
+      <nav>
+        <ul class="nav-links" role="list">
+          <li><a href="./index.html#how">How It Works</a></li>
+          <li><a href="./index.html#use-cases">Use Cases</a></li>
+          <li><a href="./index.html#fleet">Fleet</a></li>
+          <li><a href="./blog/index.html">Blog</a></li>
+          <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer" class="btn-ghost">GitHub</a></li>
+        </ul>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="post-header">
+      <a href="./index.html" class="post-back">← Back to home</a>
+      <div class="post-meta">
+        <span class="blog-entry-tag">v0.1.0</span>
+      </div>
+      <h1>AI Agent Skills Reference</h1>
+    </div>
+
+    <article class="post-body">
+      <p>Machine-readable reference for AI agents using clawstainer sandboxes. All commands default to <code>--format auto</code>: JSON when piped (typical agent usage), table in interactive terminals. Pass <code>--format json</code> explicitly to guarantee JSON output. Errors go to stderr as JSON with a non-zero exit code.</p>
+
+      <h2>Lifecycle</h2>
+
+      <h3>Create a sandbox</h3>
+
+<pre><code>clawstainer create [OPTIONS]</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Flag</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--name &lt;NAME&gt;</code></td><td>random</td><td>Human-readable name</td></tr>
+            <tr><td><code>--memory &lt;MB&gt;</code></td><td><code>512</code></td><td>Memory limit in MB</td></tr>
+            <tr><td><code>--cpus &lt;N&gt;</code></td><td><code>1</code></td><td>CPU cores</td></tr>
+            <tr><td><code>--network &lt;MODE&gt;</code></td><td><code>nat</code></td><td><code>nat</code> (internet access) or <code>none</code> (isolated)</td></tr>
+            <tr><td><code>--timeout &lt;SEC&gt;</code></td><td><code>0</code></td><td>Auto-destroy after N seconds (0 = never)</td></tr>
+            <tr><td><code>--runtime &lt;RT&gt;</code></td><td><code>nspawn</code></td><td><code>nspawn</code> or <code>firecracker</code></td></tr>
+            <tr><td><code>--security &lt;PROF&gt;</code></td><td><code>strict</code></td><td><code>strict</code> (drops dangerous caps) or <code>standard</code></td></tr>
+            <tr><td><code>--cap-add &lt;CAP,...&gt;</code></td><td>—</td><td>Add capabilities back</td></tr>
+            <tr><td><code>--cap-drop &lt;CAP,...&gt;</code></td><td>—</td><td>Drop additional capabilities</td></tr>
+            <tr><td><code>--env-file &lt;PATH&gt;</code></td><td>—</td><td>Inject KEY=VAL pairs from file</td></tr>
+            <tr><td><code>--linger</code></td><td><code>false</code></td><td>Enable systemd lingering (keeps agent services alive after logout)</td></tr>
+            <tr><td><code>--from &lt;SNAPSHOT&gt;</code></td><td>—</td><td>Create from a named snapshot</td></tr>
+            <tr><td><code>--format &lt;FMT&gt;</code></td><td><code>auto</code></td><td><code>auto</code>, <code>table</code>, or <code>json</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Returns (JSON):</strong></p>
+
+<pre><code>{
+  "id": "sb-a1b2c3d4",
+  "name": "bold-parrot",
+  "status": "running",
+  "ip": "10.0.0.2",
+  "created_at": "2026-03-27T10:30:00Z"
+}</code></pre>
+
+      <p>The <code>id</code> field is used in all subsequent commands.</p>
+
+      <h3>Destroy a sandbox</h3>
+
+<pre><code>clawstainer destroy &lt;MACHINE_ID&gt; [--format json]
+clawstainer destroy --all [--format json]</code></pre>
+
+      <p><strong>Returns (JSON):</strong></p>
+
+<pre><code>{
+  "machine_id": "sb-a1b2c3d4",
+  "status": "destroyed",
+  "uptime_seconds": 3600
+}</code></pre>
+
+      <h2>Execute Commands</h2>
+
+      <p>This is the primary agent interface. Run any shell command inside a sandbox.</p>
+
+<pre><code>clawstainer exec &lt;MACHINE_ID&gt; &lt;COMMAND&gt; [OPTIONS]</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Flag</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--timeout &lt;SEC&gt;</code></td><td><code>30</code></td><td>Kill after N seconds</td></tr>
+            <tr><td><code>--workdir &lt;PATH&gt;</code></td><td><code>/root</code></td><td>Working directory</td></tr>
+            <tr><td><code>--env &lt;KEY=VAL&gt;</code></td><td>—</td><td>Set env var (repeatable)</td></tr>
+            <tr><td><code>--user &lt;USER&gt;</code></td><td><code>root</code></td><td>Run as user</td></tr>
+            <tr><td><code>--format &lt;FMT&gt;</code></td><td><code>auto</code></td><td><code>auto</code>, <code>table</code>, or <code>json</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Returns (JSON):</strong></p>
+
+<pre><code>{
+  "machine_id": "sb-a1b2c3d4",
+  "exit_code": 0,
+  "stdout": "Hello, world!\n",
+  "stderr": "",
+  "duration_ms": 42,
+  "timed_out": false
+}</code></pre>
+
+      <p><strong>Optional fields (present when applicable):</strong></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>Condition</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>truncated</code></td><td>stdout > 1MB</td><td>Output was truncated</td></tr>
+            <tr><td><code>total_bytes</code></td><td>when truncated</td><td>Original size in bytes</td></tr>
+            <tr><td><code>peak_memory_bytes</code></td><td>nspawn only</td><td>Peak memory usage (bytes)</td></tr>
+            <tr><td><code>cpu_time_us</code></td><td>nspawn only</td><td>Total CPU time (microseconds)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Default environment inside sandbox:</strong></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Variable</th><th>Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>HOME</code></td><td><code>/root</code> (or <code>/home/&lt;user&gt;</code>)</td></tr>
+            <tr><td><code>USER</code></td><td>the <code>--user</code> value</td></tr>
+            <tr><td><code>PATH</code></td><td><code>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</code></td></tr>
+            <tr><td><code>LANG</code></td><td><code>C.UTF-8</code></td></tr>
+            <tr><td><code>TERM</code></td><td><code>xterm-256color</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Examples:</strong></p>
+
+<pre><code>clawstainer exec sb-xxx "echo hello"
+clawstainer exec sb-xxx --timeout 300 "apt-get update && apt-get install -y python3"
+clawstainer exec sb-xxx --env API_KEY=secret "python3 app.py"
+clawstainer exec sb-xxx --workdir /tmp "ls -la"</code></pre>
+
+      <h2>Copy Files</h2>
+
+      <p>Copy files and directories between the host and a sandbox.</p>
+
+<pre><code>clawstainer cp &lt;SRC&gt; &lt;DST&gt;</code></pre>
+
+      <p>Use <code>MACHINE_ID:/path</code> for sandbox paths. Plain paths are host paths.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Direction</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pull (sandbox to host)</td><td><code>clawstainer cp sb-xxx:/root/output.txt ./local/</code></td></tr>
+            <tr><td>Push (host to sandbox)</td><td><code>clawstainer cp ./input.txt sb-xxx:/root/</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Returns (JSON):</strong></p>
+
+<pre><code>{
+  "machine_id": "sb-a1b2c3d4",
+  "direction": "pull",
+  "src": "/root/output.txt",
+  "dst": "./local/"
+}</code></pre>
+
+      <p>Handles files and directories recursively. Cannot copy between two sandboxes directly.</p>
+
+      <h2>Provision</h2>
+
+      <p>Install predefined software components.</p>
+
+<pre><code>clawstainer provision &lt;MACHINE_ID&gt; --components &lt;LIST&gt; [--timeout &lt;SEC&gt;] [--format json]</code></pre>
+
+      <p><strong>Returns (JSON):</strong></p>
+
+<pre><code>{
+  "machine_id": "sb-a1b2c3d4",
+  "results": [
+    {"component": "python3", "status": "ok", "duration_ms": 88300},
+    {"component": "git", "status": "ok", "duration_ms": 15394}
+  ]
+}</code></pre>
+
+      <p><strong>Available components:</strong> <code>python3</code>, <code>nodejs</code>, <code>git</code>, <code>curl</code>, <code>build-essential</code>, <code>docker-cli</code>, <code>ripgrep</code>, <code>jq</code>, <code>claude-code</code>, <code>hermes-agent</code>, <code>openclaw</code></p>
+
+      <p><strong>Bundles:</strong> <code>agent-default</code> (python3, nodejs, git, curl, jq, ripgrep), <code>web-dev</code>, <code>ml</code>, <code>openclaw</code></p>
+
+      <p>Each component that fails does NOT block others. Results are reported individually.</p>
+
+      <h2>Snapshots</h2>
+
+      <p>Capture a provisioned sandbox for reuse. Avoids re-provisioning on every create.</p>
+
+      <h3>Create snapshot</h3>
+
+<pre><code>clawstainer snapshot create &lt;MACHINE_ID&gt; --name &lt;NAME&gt;</code></pre>
+
+      <p><strong>Returns:</strong></p>
+
+<pre><code>{
+  "name": "python3-ready",
+  "size_bytes": 157286400,
+  "created_at": "2026-03-27T10:30:00Z"
+}</code></pre>
+
+      <h3>List snapshots</h3>
+
+<pre><code>clawstainer snapshot list [--format json]</code></pre>
+
+      <h3>Delete snapshot</h3>
+
+<pre><code>clawstainer snapshot delete &lt;NAME&gt;</code></pre>
+
+      <h3>Use snapshot</h3>
+
+<pre><code>clawstainer create --name worker --from python3-ready</code></pre>
+
+      <p><strong>Typical workflow:</strong></p>
+
+<pre><code># One-time setup
+clawstainer create --name base
+clawstainer provision sb-xxx --components python3,git
+clawstainer snapshot create sb-xxx --name python3-git
+clawstainer destroy sb-xxx
+
+# Reuse (instant, no provisioning)
+clawstainer create --name worker-1 --from python3-git
+clawstainer create --name worker-2 --from python3-git</code></pre>
+
+      <h2>Monitoring</h2>
+
+      <h3>List sandboxes</h3>
+
+<pre><code>clawstainer list [--format json] [--status running|stopped|all] [--watch &lt;SEC&gt;]</code></pre>
+
+      <h3>Stats</h3>
+
+<pre><code>clawstainer stats                          # Global overview
+clawstainer stats &lt;MACHINE_ID&gt;             # Per-sandbox details
+clawstainer stats --format json            # JSON output</code></pre>
+
+      <h3>Exec logs</h3>
+
+<pre><code>clawstainer logs &lt;MACHINE_ID&gt; [--last &lt;N&gt;] [--format json]</code></pre>
+
+      <h2>Fleet Management</h2>
+
+      <p>Deploy multiple sandboxes from YAML.</p>
+
+<pre><code>clawstainer fleet create --file fleet.yaml [--parallel &lt;N&gt;] [--format json]
+clawstainer fleet destroy --all [--format json]
+clawstainer fleet destroy --name &lt;GROUP&gt; [--format json]</code></pre>
+
+      <p><strong>fleet.yaml format:</strong></p>
+
+<pre><code>machines:
+  - name: worker
+    count: 5
+    memory: 1024
+    cpus: 2
+    provision: python3
+    security: strict        # optional
+    cap_add: []             # optional
+    cap_drop: [CAP_NET_RAW] # optional
+    env_file: .env          # optional</code></pre>
+
+      <h2>Other</h2>
+
+      <h3>Port forwarding</h3>
+
+<pre><code>clawstainer port-forward &lt;MACHINE_ID&gt; &lt;HOST_PORT:SANDBOX_PORT&gt;</code></pre>
+
+      <h3>Interactive shell (human use)</h3>
+
+<pre><code>clawstainer shell &lt;MACHINE_ID&gt; [--user &lt;USER&gt;]</code></pre>
+
+      <h2>Error Codes</h2>
+
+      <p>All errors return JSON to stderr:</p>
+
+<pre><code>{"error": "machine_not_found", "message": "No machine with ID 'sb-xyz'", "hint": "Run 'clawstainer list' to see active machines"}</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Code</th><th>Error</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td>—</td><td>Success</td></tr>
+            <tr><td>1</td><td><code>internal_error</code></td><td>Unexpected error</td></tr>
+            <tr><td>2</td><td><code>machine_not_found</code></td><td>Invalid machine ID</td></tr>
+            <tr><td>3</td><td><code>machine_not_running</code></td><td>Machine is stopped</td></tr>
+            <tr><td>4</td><td><code>create_failed</code></td><td>Sandbox creation failed</td></tr>
+            <tr><td>5</td><td><code>exec_timeout</code></td><td>Command exceeded timeout</td></tr>
+            <tr><td>6</td><td><code>exec_failed</code></td><td>Command execution failed</td></tr>
+            <tr><td>7</td><td><code>provision_failed</code></td><td>Component install failed</td></tr>
+            <tr><td>8</td><td><code>runtime_unavailable</code></td><td>Linux/nspawn not available</td></tr>
+            <tr><td>9</td><td><code>resource_limit</code></td><td>Host resources exhausted</td></tr>
+            <tr><td>10</td><td><code>permission_denied</code></td><td>Needs root</td></tr>
+            <tr><td>11</td><td><code>copy_failed</code></td><td>File copy failed</td></tr>
+            <tr><td>12</td><td><code>snapshot_failed</code></td><td>Snapshot operation failed</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Agent Workflow Pattern</h2>
+
+<pre><code>1. create          → get machine ID
+2. provision       → install dependencies (or use --from snapshot)
+3. cp (push)       → send input files
+4. exec            → run commands, read stdout/stderr/exit_code
+5. exec            → iterate: write code, run tests, fix errors
+6. cp (pull)       → retrieve output files
+7. destroy         → clean up</code></pre>
+
+      <p>For pipelines with repeated setups, snapshot after step 2 and use <code>--from</code> on subsequent runs.</p>
+
+    </article>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <span class="footer-text">© 2026 Clawstainer. All rights reserved.</span>
+      <ul class="footer-links" role="list">
+        <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md" target="_blank" rel="noopener noreferrer">Docs</a></li>
+        <li><a href="./skills.html">Skills</a></li>
+        <li><a href="https://x.com/clawstainer" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+  function toggleTheme() {
+    var root = document.documentElement;
+    var current = root.getAttribute('data-theme');
+    var next;
+    if (current === 'light') next = 'dark';
+    else if (current === 'dark') next = 'light';
+    else next = window.matchMedia('(prefers-color-scheme: light)').matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+  </script>
+</body>
+</html>
