@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw 2.0 Is Here, and Clawstainer Has a Recipe for It — Clawstainer</title>
+  <meta name="description" content="OpenClaw 2.0 is a major release with guided setup, a chat-first Control UI, and a SQLite session migration. Clawstainer has a built-in recipe, so you can upgrade or try it in a disposable local sandbox that boots in seconds.">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../base.css">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo-group" aria-label="Clawstainer home">
+        <svg width="180" height="40" viewBox="0 0 360 80" aria-hidden="true">
+          <g class="logo-dots">
+            <rect x="56.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(22.0 60.00 40.00)"/>
+            <rect x="50.14" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(67.0 54.14 54.14)"/>
+            <rect x="36.00" y="56.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.95" transform="rotate(112.0 40.00 60.00)"/>
+            <rect x="21.86" y="50.14" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.75" transform="rotate(157.0 25.86 54.14)"/>
+            <rect x="16.00" y="36.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.60" transform="rotate(202.0 20.00 40.00)"/>
+            <rect x="21.86" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(247.0 25.86 25.86)"/>
+            <rect x="36.00" y="16.00" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(292.0 40.00 20.00)"/>
+            <rect x="50.14" y="21.86" width="8.00" height="8.00" rx="1.5" fill="currentColor" opacity="0.40" transform="rotate(337.0 54.14 25.86)"/>
+          </g>
+          <text x="76" y="47" font-family="'JetBrains Mono', monospace" font-size="30" font-weight="600" fill="currentColor" letter-spacing="-0.02em">clawstainer</text>
+        </svg>
+      </a>
+      <nav>
+        <ul class="nav-links" role="list">
+          <li><a href="../index.html#how">How It Works</a></li>
+          <li><a href="../index.html#use-cases">Use Cases</a></li>
+          <li><a href="../index.html#fleet">Fleet</a></li>
+          <li><a href="./index.html">Blog</a></li>
+          <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer" class="btn-ghost">GitHub</a></li>
+        </ul>
+      </nav>
+      <button class="menu-toggle" aria-label="Toggle menu" onclick="this.previousElementSibling.classList.toggle('open')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="post-header">
+      <a href="./index.html" class="post-back">&larr; Back to blog</a>
+      <div class="post-meta">
+        <span class="blog-entry-date">2026-09-01</span>
+        <span class="blog-entry-tag">release</span>
+      </div>
+      <h1>OpenClaw 2.0 Is Here, and Clawstainer Has a Recipe for It</h1>
+    </div>
+
+    <article class="post-body">
+      <p><a href="https://openclaw.ai/" target="_blank" rel="noopener noreferrer">OpenClaw</a> 2.0 landed, and it is a genuinely big release.</p>
+
+      <p>The team's own post calls it accidental, in the sense that they slowed the release cadence to rebuild foundations properly and looked up to find they had shipped a major version. The numbers back that up. More than 16,000 pull requests went into it, roughly half of every PR ever merged into the project. That is not a point release wearing a bigger number.</p>
+
+      <p>What you actually get is a much better product. Setup is guided now, and it verifies your model connection before it saves anything, reusing the API keys, subscriptions, and local models already sitting on your machine instead of making you paste everything in again. The Control UI was rebuilt chat-first, with conversations in the sidebar, streaming Markdown replies, and a Sessions page you can search and batch-manage. There is a git panel with working-tree diffs, a dockable browser panel for inspecting elements, a background task panel that tracks work across conversations, and approval gates with a 30-day history for anything that wants a human in the loop. Tool calls render as readable rows with inline diffs, which makes watching your agent work feel like reading a changelog instead of squinting at a firehose. Shared cloud sessions bring other people into a conversation without losing context.</p>
+
+      <p>It is a lot. It is also, if you are coming from 1.x, a real upgrade rather than a drop-in one.</p>
+
+      <p>So here is our small contribution to the moment. Clawstainer ships a built-in OpenClaw recipe, and whether you are upgrading an existing Claw or meeting it for the first time this week, a disposable local sandbox is a great place to do it.</p>
+
+      <h2>The Recipe</h2>
+
+      <p>Clawstainer creates isolated Linux sandboxes on your laptop. No Docker, no cloud account, no bill. On macOS it runs a lightweight Linux VM through <a href="https://lima-vm.io/" target="_blank" rel="noopener noreferrer">Lima</a> and hides the whole thing from you. On Linux it runs natively. Boot takes 2-3 seconds.</p>
+
+<pre><code>brew install lima          # macOS only
+cargo install clawstainer</code></pre>
+
+      <p>Then two commands for a running gateway:</p>
+
+<pre><code>clawstainer create --name openclaw-box --memory 2048 --cpus 2 --linger
+clawstainer provision &lt;id&gt; --components openclaw</code></pre>
+
+      <p>The <code>openclaw</code> component pulls the current installer from openclaw.ai, so you get 2.0 and the Node 22 runtime it wants without thinking about either. It writes an <code>openclaw-gateway.service</code> unit, enables it, starts it, and verifies with <code>openclaw --version</code>. It carries a 600 second timeout so you are not guessing at one.</p>
+
+      <p>Pass <code>--linger</code> at create time. Without systemd lingering, user services get reaped on logout or idle, which for a long-lived gateway means your agent quietly dies the moment you stop watching it. The recipe enables lingering inside the sandbox as well, but setting it on the box saves you a confusing afternoon. The same applies to Hermes.</p>
+
+      <p>The rest of the loop:</p>
+
+<pre><code># Get inside
+clawstainer shell &lt;id&gt;
+
+# Watch it come up
+clawstainer logs &lt;id&gt;
+
+# Open the new Control UI from your host browser
+clawstainer port-forward &lt;id&gt; 8080:8080
+
+# Push a config in
+clawstainer cp ./config.json &lt;id&gt;:/root/
+
+# Gone, cleanly
+clawstainer destroy &lt;id&gt;</code></pre>
+
+      <p>Every sandbox gets its own overlay filesystem, so <code>destroy</code> really does mean gone.</p>
+
+      <h2>If You Are Upgrading from 1.x</h2>
+
+      <p>This is the case we would most like to flag, because 2.0 changes how sessions and transcripts are stored. They move into SQLite. The release notes are clear that you should take a verified backup first, and that sessions created after the migration will not show up if you roll back to an older file-backed release.</p>
+
+      <p>That is a completely reasonable thing for a project to do at a major version. It is also exactly the kind of change you want to rehearse once before you run it against the Claw you actually depend on.</p>
+
+      <p>A sandbox makes the rehearsal cheap. Stand up a box, restore a copy of your config into it, run the upgrade, poke at your channels and your skills, and see what moves. If it all works, do it for real with confidence instead of hope. If something surprises you, you found it on a machine you can throw away.</p>
+
+      <h2>If You Are Trying It for the First Time</h2>
+
+      <p>Then the sandbox is just the tidiest front door available.</p>
+
+      <p>OpenClaw is an agent with hands. It runs shell commands, drives a browser, reads and writes files, and talks to you through WhatsApp, Telegram, Slack, Discord, iMessage, or Signal. That reach is the entire point, and 2.0 leans into it with better approval gates and a clearer trust model of one boundary per gateway. Running your first experiments inside a sandbox is not a hedge against the project. It is the same instinct the project itself recommends, made convenient.</p>
+
+      <p>Practically, it means you can be curious without being careful. Try a config, break it, <code>destroy</code>, start again two seconds later. Nothing accumulates on your laptop. Nothing needs cleaning up.</p>
+
+      <h2>Where Sandboxes Really Earn Their Keep</h2>
+
+      <p>Three habits worth stealing once you have the recipe running.</p>
+
+      <h3>1. Snapshot your known-good gateway</h3>
+
+      <p>This is the big one.</p>
+
+<pre><code>clawstainer snapshot create &lt;id&gt; --name openclaw-2-ready
+clawstainer create --name test-1 --from openclaw-2-ready --linger</code></pre>
+
+      <p>Now every experiment starts from an identical baseline. When something breaks you know it was your change, not four days of accumulated drift. That turns debugging an agent into an actual process. We wrote up the full pattern in <a href="./snapshot-your-agents.html">Snapshot Your Agents</a>, including the golden image workflow for keeping a fleet on the same version.</p>
+
+      <h3>2. Audition skills before you trust them</h3>
+
+      <p>Community skills are one of the best things about OpenClaw, portable <code>SKILL.md</code> files you can pull from ClawHub, a repo, or a URL, and read before you run. Reading them is good. Running them in a box you can delete is better. Provision from your snapshot, drop the skill in, watch what it does, tear it down, and then decide. It is the same quarantine habit we use for <a href="./quarantine-your-dependencies.html">dependency updates</a>, applied to agent extensions.</p>
+
+      <h3>3. Test more than one config at once</h3>
+
+      <p>A <code>fleet.yaml</code> gets you ten gateways in parallel:</p>
+
+<pre><code>machines:
+  - name: openclaw
+    count: 10
+    memory: 1024
+    cpus: 2
+    provision: openclaw
+    linger: true</code></pre>
+
+<pre><code>clawstainer fleet create --file fleet.yaml --parallel 5</code></pre>
+
+      <p>Handy for comparing models on the same task, or reproducing a bug against a setup you do not personally run.</p>
+
+      <h2>Flags Worth Knowing</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Flag</th>
+              <th>What it does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>--linger</code></td>
+              <td>Keeps the gateway alive after logout. Required for OpenClaw in practice.</td>
+            </tr>
+            <tr>
+              <td><code>--network none</code></td>
+              <td>Cuts the sandbox off from the network entirely. A clean way to observe what something tries to reach.</td>
+            </tr>
+            <tr>
+              <td><code>--env-file</code></td>
+              <td>Injects API keys without putting them in your shell history.</td>
+            </tr>
+            <tr>
+              <td><code>--security strict</code></td>
+              <td>The default. Drops CAP_NET_RAW, CAP_SYS_PTRACE, and CAP_MKNOD, and sets no-new-privileges. You opt out of hardening, not into it.</td>
+            </tr>
+            <tr>
+              <td><code>--from</code></td>
+              <td>Boots from a snapshot instead of re-provisioning.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>For sizing, OpenClaw wants 2GB during provisioning and runs comfortably in 1-2GB after that. A provisioned snapshot lands around 700MB.</p>
+
+      <h2>One Honest Note on the Boundary</h2>
+
+      <p>The default nspawn runtime is a container, which means namespace and cgroup isolation over a shared kernel. That is a strong boundary for testing, iteration, and keeping a half-configured agent away from your dotfiles. It is not a hardware wall. Clawstainer includes a Firecracker microVM backend for that, but it is experimental and untested today, so treat it as such.</p>
+
+      <p>A sandbox also does not solve prompt injection. If your gateway is wired to a channel where untrusted content arrives, that content can still steer the model. What the sandbox changes is the blast radius when it does.</p>
+
+      <h2>Give It a Shot</h2>
+
+      <p>OpenClaw 2.0 deserves the attention it is getting. If the release made you want to upgrade, or made you want to finally try the thing, the two commands are right here.</p>
+
+<pre><code>clawstainer create --name openclaw-box --memory 2048 --cpus 2 --linger
+clawstainer provision &lt;id&gt; --components openclaw</code></pre>
+
+      <p>Clawstainer is open source and MIT licensed. Issues, recipes, and pull requests welcome.</p>
+
+      <div class="post-footer-links">
+        <a href="https://github.com/friscobrisco/clawstainer">Clawstainer on GitHub</a> &middot; <a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md">Docs</a> &middot; <a href="https://docs.openclaw.ai/releases/2026.8.1">OpenClaw 2.0 release notes</a>
+      </div>
+    </article>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <span class="footer-text">&copy; 2026 Clawstainer. All rights reserved.</span>
+      <ul class="footer-links" role="list">
+        <li><a href="https://github.com/friscobrisco/clawstainer" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/friscobrisco/clawstainer/blob/main/docs.md" target="_blank" rel="noopener noreferrer">Docs</a></li>
+      </ul>
+    </div>
+  </footer>
+
+<script>
+  function toggleTheme() {
+    var root = document.documentElement;
+    var current = root.getAttribute('data-theme');
+    var next;
+    if (current === 'light') next = 'dark';
+    else if (current === 'dark') next = 'light';
+    else next = window.matchMedia('(prefers-color-scheme: light)').matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+  </script>
+</body>
+</html>
